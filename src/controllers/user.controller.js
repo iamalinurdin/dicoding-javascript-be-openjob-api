@@ -1,0 +1,30 @@
+import { Invarianterror } from "../exceptions/index.js";
+import { userRepository } from "../repositories/index.js";
+import { response } from "../utils/index.js";
+
+export const createUser = async (req, res, next) => {
+  const { name, email, role, password } = req.body;
+  const user = await userRepository.createUser({
+    email,
+    password,
+    role,
+    name,
+  });
+
+  if (!user) {
+    return next(new Invarianterror("user gagal ditambahkan"));
+  }
+
+  response(res, 201, "success", user);
+};
+
+export const getUserById = async (req, res, next) => {
+  const { id } = req.params;
+  const user = await userRepository.getUserById(id);
+
+  if (!user) {
+    return next(new Invarianterror("user tidak ditemukan"));
+  }
+
+  response(res, 200, "success", user);
+};
