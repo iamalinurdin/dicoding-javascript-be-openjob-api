@@ -8,10 +8,10 @@ class UserRepository {
   }
 
   async createUser({ name, email, password, role }) {
-    const username = nanoid(8).toString();
+    const id = nanoid(10);
     const query = {
-      text: "INSERT INTO users (name, email, username, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-      values: [name, email, username, password, role],
+      text: "INSERT INTO users (id, name, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+      values: [id, name, email, password, role],
     };
     const result = await this.pool.query(query);
 
@@ -26,6 +26,16 @@ class UserRepository {
     const result = await this.pool.query(query);
 
     return result.rows[0];
+  }
+
+  async verifyEmail(email) {
+    const query = {
+      text: "SELECT email FROM users WHERE email = $1",
+      values: [email],
+    };
+    const result = await this.pool.query(query);
+
+    return result.rows.length > 0;
   }
 }
 

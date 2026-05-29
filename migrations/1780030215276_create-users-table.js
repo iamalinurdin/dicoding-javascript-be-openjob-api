@@ -10,7 +10,10 @@ export const shorthands = undefined;
  */
 export const up = (pgm) => {
   pgm.createTable("users", {
-    id: "id",
+    id: {
+      type: "VARCHAR(50)",
+      primaryKey: true,
+    },
     name: {
       type: "VARCHAR(255)",
       notNull: true,
@@ -20,14 +23,12 @@ export const up = (pgm) => {
       notNull: true,
       unique: true,
     },
-    username: {
-      type: "VARCHAR(255)",
-      notNull: true,
-      unique: true,
-    },
     password: {
       type: "TEXT",
       notNull: true,
+    },
+    role: {
+      type: "VARCHAR(255)",
     },
     created_at: {
       type: "TIMESTAMP",

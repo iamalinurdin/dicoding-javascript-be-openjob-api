@@ -1,9 +1,15 @@
-import { Invarianterror } from "../exceptions/index.js";
+import { Invarianterror, NotFoundError } from "../exceptions/index.js";
 import { userRepository } from "../repositories/index.js";
 import { response } from "../utils/index.js";
 
 export const createUser = async (req, res, next) => {
   const { name, email, role, password } = req.body;
+  const emailUsed = await userRepository.verifyEmail(email);
+
+  if (emailUsed) {
+    return next(new Invarianterror("email sudah digunakan"));
+  }
+
   const user = await userRepository.createUser({
     email,
     password,
@@ -23,7 +29,7 @@ export const getUserById = async (req, res, next) => {
   const user = await userRepository.getUserById(id);
 
   if (!user) {
-    return next(new Invarianterror("user tidak ditemukan"));
+    return next(new NotFoundError("user tidak ditemukan"));
   }
 
   response(res, 200, "success", user);
