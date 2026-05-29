@@ -1,4 +1,4 @@
-import { Invarianterror, NotFoundError } from "../exceptions/index.js";
+import { InvariantError, NotFoundError } from "../exceptions/index.js";
 import { userRepository } from "../repositories/index.js";
 import { response } from "../utils/index.js";
 
@@ -7,7 +7,7 @@ export const createUser = async (req, res, next) => {
   const emailUsed = await userRepository.verifyEmail(email);
 
   if (emailUsed) {
-    return next(new Invarianterror("email sudah digunakan"));
+    return next(new InvariantError("email sudah digunakan"));
   }
 
   const user = await userRepository.createUser({
@@ -18,7 +18,7 @@ export const createUser = async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new Invarianterror("user gagal ditambahkan"));
+    return next(new InvariantError("user gagal ditambahkan"));
   }
 
   response(res, 201, "success", user);
