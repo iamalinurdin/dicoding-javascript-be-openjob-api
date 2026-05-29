@@ -7,6 +7,13 @@ import {
   deleteCompany,
 } from "./company.controller.js";
 import { login, logout, refreshToken } from "./authentication.controller.js";
+import {
+  createCategory,
+  deleteCategory,
+  getCategories,
+  getCategoryById,
+  updateCategory,
+} from "./category.controller.js";
 
 export {
   // users
@@ -22,4 +29,10 @@ export {
   login,
   logout,
   refreshToken,
+  // category
+  createCategory,
+  deleteCategory,
+  getCategories,
+  getCategoryById,
+  updateCategory,
 };

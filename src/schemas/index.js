@@ -4,11 +4,20 @@ import {
   refreshTokenSchema,
   logoutSchema,
 } from "./auth.schema.js";
+import {
+  categoryCreateSchema,
+  categoryUpdateSchema,
+} from "./category.schema.js";
 
 export {
+  // company
   companyCreateSchema,
   companyUpdateSchema,
+  // auth
   loginSchema,
   refreshTokenSchema,
   logoutSchema,
+  // category
+  categoryCreateSchema,
+  categoryUpdateSchema,
 };
