@@ -3,6 +3,16 @@ import {
   createCompany,
   getCompanies,
   getCompanyById,
+  updateCompany,
+  deleteCompany,
 } from "./company.controller.js";
 
-export { createUser, getUserById, createCompany, getCompanies, getCompanyById };
+export {
+  createUser,
+  getUserById,
+  createCompany,
+  getCompanies,
+  getCompanyById,
+  updateCompany,
+  deleteCompany,
+};
