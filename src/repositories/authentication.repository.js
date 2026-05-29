@@ -1,0 +1,63 @@
+import { Pool } from "pg";
+import bcrypt from "bcrypt";
+
+class AuthenticationRepository {
+  constructor() {
+    this.pool = new Pool();
+  }
+
+  async addRefreshToken(token) {
+    const query = {
+      text: "INSERT INTO authentications VALUES($1)",
+      values: [token],
+    };
+
+    await this.pool.query(query);
+  }
+
+  async deleteRefreshToken(token) {
+    const query = {
+      text: "DELETE FROM authentications WHERE token = $1",
+      values: [token],
+    };
+    await this.pool.query(query);
+  }
+
+  async verifyRefreshToken(token) {
+    const query = {
+      text: "SELECT token FROM authentications WHERE token = $1",
+      values: [token],
+    };
+
+    const result = await this.pool.query(query);
+    if (!result.rows.length) {
+      return false;
+    }
+
+    return result.rows[0];
+  }
+
+  async verifyUserCredential(username, password) {
+    const query = {
+      text: "SELECT id, password FROM users WHERE username = $1",
+      values: [username],
+    };
+
+    const user = await this.pool.query(query);
+    if (!user) {
+      return null;
+    }
+
+    const { id, password: hashedPassword } = user.rows[0];
+    const isPasswordNatch = await bcrypt.compare(password, hashedPassword);
+
+    if (!isPasswordNatch) {
+      return null;
+    }
+    return id;
+  }
+}
+
+const authenticationRepository = new AuthenticationRepository();
+
+export default authenticationRepository;

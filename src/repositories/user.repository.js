@@ -9,9 +9,10 @@ class UserRepository {
 
   async createUser({ name, email, password, role }) {
     const id = nanoid(10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const query = {
       text: "INSERT INTO users (id, name, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-      values: [id, name, email, password, role],
+      values: [id, name, email, hashedPassword, role],
     };
     const result = await this.pool.query(query);
 
@@ -36,6 +37,27 @@ class UserRepository {
     const result = await this.pool.query(query);
 
     return result.rows.length > 0;
+  }
+
+  async verifyUserCredential(email, password) {
+    const query = {
+      text: "SELECT id, password FROM users WHERE email = $1",
+      values: [email],
+    };
+
+    const user = await this.pool.query(query);
+    if (!user) {
+      return null;
+    }
+
+    const { id, password: hashedPassword } = user.rows[0];
+    const isPasswordNatch = await bcrypt.compare(password, hashedPassword);
+
+    if (!isPasswordNatch) {
+      return null;
+    }
+
+    return id;
   }
 }
 
