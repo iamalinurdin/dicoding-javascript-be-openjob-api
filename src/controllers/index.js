@@ -14,6 +14,15 @@ import {
   getCategoryById,
   updateCategory,
 } from "./category.controller.js";
+import {
+  getJobs,
+  getJobById,
+  getJobByCategory,
+  getJobByCompany,
+  createJob,
+  updateJob,
+  deleteJob,
+} from "./job.controller.js";
 
 export {
   // users
@@ -35,4 +44,12 @@ export {
   getCategories,
   getCategoryById,
   updateCategory,
+  // job
+  getJobs,
+  getJobById,
+  getJobByCategory,
+  getJobByCompany,
+  createJob,
+  updateJob,
+  deleteJob,
 };

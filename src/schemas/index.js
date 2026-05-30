@@ -8,6 +8,7 @@ import {
   categoryCreateSchema,
   categoryUpdateSchema,
 } from "./category.schema.js";
+import { jobCreateSchema, jobUpdateSchema } from "./job.schema.js";
 
 export {
   // company
@@ -20,4 +21,7 @@ export {
   // category
   categoryCreateSchema,
   categoryUpdateSchema,
+  // job
+  jobCreateSchema,
+  jobUpdateSchema,
 };
