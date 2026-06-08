@@ -3,6 +3,7 @@ import companyRepository from "./company.repository.js";
 import authenticationRepository from "./authentication.repository.js";
 import categoryRepository from "./category.repository.js";
 import jobRepository from "./job.repository.js";
+import applicationRepository from "./application.repository.js";
 
 export {
   userRepository,
@@ -10,4 +11,5 @@ export {
   authenticationRepository,
   categoryRepository,
   jobRepository,
+  applicationRepository,
 };

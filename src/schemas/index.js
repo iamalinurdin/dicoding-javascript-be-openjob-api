@@ -9,6 +9,10 @@ import {
   categoryUpdateSchema,
 } from "./category.schema.js";
 import { jobCreateSchema, jobUpdateSchema } from "./job.schema.js";
+import {
+  createApplicationSchema,
+  updateApplicationSchema,
+} from "./application.schema.js";
 
 export {
   // company
@@ -24,4 +28,7 @@ export {
   // job
   jobCreateSchema,
   jobUpdateSchema,
+  // application
+  createApplicationSchema,
+  updateApplicationSchema,
 };

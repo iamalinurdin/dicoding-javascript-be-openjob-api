@@ -23,6 +23,15 @@ import {
   updateJob,
   deleteJob,
 } from "./job.controller.js";
+import {
+  applyJob,
+  deleteApplication,
+  getApplicationById,
+  getApplicationByJobId,
+  getApplicationByUserId,
+  getApplications,
+  updateApplication,
+} from "./application.controller.js";
 
 export {
   // users
@@ -52,4 +61,12 @@ export {
   createJob,
   updateJob,
   deleteJob,
+  // application
+  applyJob,
+  deleteApplication,
+  getApplicationById,
+  getApplicationByJobId,
+  getApplicationByUserId,
+  getApplications,
+  updateApplication,
 };
