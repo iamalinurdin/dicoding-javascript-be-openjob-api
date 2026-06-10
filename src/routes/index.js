@@ -4,6 +4,7 @@ import authRoute from "./auth.route.js";
 import categoryRoute from "./category.route.js";
 import jobRoute from "./job.route.js";
 import applicationRoute from "./application.route.js";
+import bookmarkRoute from "./bookmark.route.js";
 
 export {
   userRoute,
@@ -12,4 +13,5 @@ export {
   categoryRoute,
   jobRoute,
   applicationRoute,
+  bookmarkRoute,
 };

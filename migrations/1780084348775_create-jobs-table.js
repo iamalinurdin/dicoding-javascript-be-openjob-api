@@ -70,17 +70,17 @@ export const up = (pgm) => {
     },
   });
 
-  pgm.addConstraint("jobs", "unique_jobs", "UNIQUE(company_id, category_id)");
-  pgm.addConstraint(
-    "jobs",
-    "fk_jobs.company_id_companies.id",
-    "FOREIGN KEY(company_id) REFERENCES companies(id) ON DELETE CASCADE",
-  );
-  pgm.addConstraint(
-    "jobs",
-    "fk_jobs.category_id_categories.id",
-    "FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE",
-  );
+  // pgm.addConstraint("jobs", "unique_jobs", "UNIQUE(company_id, category_id)");
+  // pgm.addConstraint(
+  //   "jobs",
+  //   "fk_jobs.company_id_companies.id",
+  //   "FOREIGN KEY(company_id) REFERENCES companies(id) ON DELETE CASCADE",
+  // );
+  // pgm.addConstraint(
+  //   "jobs",
+  //   "fk_jobs.category_id_categories.id",
+  //   "FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE",
+  // );
 };
 
 /**

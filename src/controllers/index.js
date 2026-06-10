@@ -32,6 +32,7 @@ import {
   getApplications,
   updateApplication,
 } from "./application.controller.js";
+export * from "./bookmark.controller.js";
 
 export {
   // users

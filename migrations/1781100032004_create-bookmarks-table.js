@@ -9,7 +9,7 @@ export const shorthands = undefined;
  * @returns {Promise<void> | void}
  */
 export const up = (pgm) => {
-  pgm.createTable("applications", {
+  pgm.createTable("bookmarks", {
     id: {
       type: "VARCHAR(50)",
       primaryKey: true,
@@ -19,10 +19,6 @@ export const up = (pgm) => {
       notNull: true,
     },
     job_id: {
-      type: "VARCHAR(50)",
-      notNull: true,
-    },
-    status: {
       type: "VARCHAR(50)",
       notNull: true,
     },
@@ -37,22 +33,6 @@ export const up = (pgm) => {
       default: pgm.func("current_timestamp"),
     },
   });
-
-  // pgm.addConstraint(
-  //   "applications",
-  //   "unique_applications",
-  //   "UNIQUE(user_id, job_id)",
-  // );
-  // pgm.addConstraint(
-  //   "applications",
-  //   "fk_applications.user_id_users.id",
-  //   "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE",
-  // );
-  // pgm.addConstraint(
-  //   "jobs",
-  //   "fk_applications.job_id_jobs.id",
-  //   "FOREIGN KEY(job_id) REFERENCES job(id) ON DELETE CASCADE",
-  // );
 };
 
 /**
@@ -61,5 +41,5 @@ export const up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 export const down = (pgm) => {
-  pgm.dropTable("applications");
+  pgm.dropTable("bookmarks");
 };
