@@ -50,12 +50,12 @@ class CategoryRepository {
 
   async deleteCategory(id) {
     const query = {
-      text: "DELETE FROM companies WHERE id = $1 RETURNING id",
+      text: "DELETE FROM categories WHERE id = $1 RETURNING id",
       values: [id],
     };
     const result = await this.pool.query(query);
 
-    return result.rows[0].id;
+    return result.rows[0];
   }
 }
 

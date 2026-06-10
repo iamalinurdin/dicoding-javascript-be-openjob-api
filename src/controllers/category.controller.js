@@ -5,7 +5,9 @@ import { response } from "../utils/index.js";
 export const getCategories = async (req, res, next) => {
   const categories = await categoryRepository.getCategories();
 
-  response(res, 200, "success", categories);
+  response(res, 200, "success", {
+    categories,
+  });
 };
 
 export const createCategory = async (req, res, next) => {
