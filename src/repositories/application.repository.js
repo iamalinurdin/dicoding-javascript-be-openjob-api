@@ -46,7 +46,7 @@ class ApplicationRepository {
 
     const result = await this.pool.query(query);
 
-    return result.rows[0];
+    return result.rows;
   }
 
   async getApplicationByJobId(job_id) {
@@ -57,7 +57,7 @@ class ApplicationRepository {
 
     const result = await this.pool.query(query);
 
-    return result.rows[0];
+    return result.rows;
   }
 
   async updateApplication({ id, status }) {
