@@ -5,7 +5,9 @@ import { response } from "../utils/index.js";
 export const getBookmarks = async (req, res, next) => {
   const bookmarks = await bookmarkRepository.getBookmarks();
 
-  response(res, 200, "success", bookmarks);
+  response(res, 200, "success", {
+    bookmarks,
+  });
 };
 
 export const addBookmark = async (req, res, next) => {
@@ -20,7 +22,7 @@ export const addBookmark = async (req, res, next) => {
     return next(new InvariantError("bookmark gagal ditambahkan"));
   }
 
-  response(res, 200, "success", bookmark);
+  response(res, 201, "success", bookmark);
 };
 
 export const getBookmarkById = async (req, res, next) => {
@@ -40,8 +42,9 @@ export const getBookmarkById = async (req, res, next) => {
 export const deleteBookmark = async (req, res, next) => {
   const { jobId } = req.params;
   const { id } = req.user;
+
   const deletedBookmark = await bookmarkRepository.deleteBookmark({
-    id,
+    user_id: id,
     job_id: jobId,
   });
 
@@ -49,5 +52,5 @@ export const deleteBookmark = async (req, res, next) => {
     return next(new NotFoundError("bookmark tidak ditemukan"));
   }
 
-  response(res, 201, "success", deletedBookmark);
+  response(res, 200, "success", deletedBookmark);
 };

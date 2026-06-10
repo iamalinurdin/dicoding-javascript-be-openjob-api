@@ -9,7 +9,7 @@ class BookmarkRepository {
 
   async getBookmarks(user_id) {
     const query = {
-      text: `SELECT * FROM bookmarks WHERE bookmarks.user_id = $1`,
+      text: `SELECT * FROM bookmarks WHERE user_id = $1`,
       values: [user_id],
     };
     const result = await this.pool.query(query);
@@ -36,11 +36,18 @@ class BookmarkRepository {
           b.user_id,
           b.created_at,
           j.id AS job_id,
+          j.company_id,
+          j.category_id,
           j.title,
           j.description,
-          j.location,
+          j.job_type,
+          j.experience_level,
+          j.location_type,
+          j.location_city,
           j.salary_min,
-          j.salary_max
+          j.salary_max,
+          j.is_salary_visible,
+          j.status
         FROM bookmarks b
         INNER JOIN jobs j
             ON j.id = b.job_id
@@ -49,7 +56,6 @@ class BookmarkRepository {
       `,
       values: [id, job_id],
     };
-
     const result = await this.pool.query(query);
 
     return result.rows[0];
@@ -57,16 +63,12 @@ class BookmarkRepository {
 
   async deleteBookmark({ user_id, job_id }) {
     const query = {
-      text: `DELETE FROM bookmarks
-          WHERE user_id = $1
-          AND job_id = $2
-          RETURNING *;
-      `,
+      text: `DELETE FROM bookmarks WHERE user_id = $1 AND job_id = $2 RETURNING id;`,
       values: [user_id, job_id],
     };
     const result = await this.pool.query(query);
 
-    return result.rows[0].id;
+    return result.rows[0];
   }
 }
 
