@@ -8,14 +8,14 @@ import response from "../utils/response.js";
 
 export const login = async (req, res, next) => {
   const { email, password } = req.validated;
-  const userId = await userRepository.verifyUserCredential(email, password);
+  const user = await userRepository.verifyUserCredential(email, password);
 
-  if (!userId) {
+  if (!user) {
     return next(new AuthenticationError("Kredensial yang Anda berikan salah"));
   }
 
-  const accessToken = TokenManager.generateAccessToken({ id: userId });
-  const refreshToken = TokenManager.generateRefreshToken({ id: userId });
+  const accessToken = TokenManager.generateAccessToken({ id: user });
+  const refreshToken = TokenManager.generateRefreshToken({ id: user });
 
   await authenticationRepository.addRefreshToken(refreshToken);
 
