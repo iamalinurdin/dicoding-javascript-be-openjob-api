@@ -20,7 +20,9 @@ export const createCompany = async (req, res, next) => {
 export const getCompanies = async (req, res, next) => {
   const companies = await companyRepository.getCompanies();
 
-  response(res, 200, "success", companies);
+  response(res, 200, "success", {
+    companies,
+  });
 };
 
 export const getCompanyById = async (req, res, next) => {
@@ -35,7 +37,7 @@ export const getCompanyById = async (req, res, next) => {
 };
 
 export const updateCompany = async (req, res, next) => {
-  const { name, location, description } = req.validated;
+  const { name, location, description = "-" } = req.validated;
   const { id } = req.params;
   const updatedCompany = await companyRepository.updateCompany({
     id,
@@ -48,7 +50,7 @@ export const updateCompany = async (req, res, next) => {
     return next(new NotFoundError("perusahaan tidak ditemukan"));
   }
 
-  response(res, 201, "success", updatedCompany);
+  response(res, 200, "success", updatedCompany);
 };
 
 export const deleteCompany = async (req, res, next) => {
@@ -59,5 +61,5 @@ export const deleteCompany = async (req, res, next) => {
     return next(new NotFoundError("perusahaan tidak ditemukan"));
   }
 
-  response(res, 201, "success", deletedCompany);
+  response(res, 200, "success", deletedCompany);
 };

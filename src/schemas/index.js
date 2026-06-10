@@ -13,6 +13,7 @@ import {
   createApplicationSchema,
   updateApplicationSchema,
 } from "./application.schema.js";
+import { createUserSchema } from "./user.schema.js";
 
 export {
   // company
@@ -31,4 +32,6 @@ export {
   // application
   createApplicationSchema,
   updateApplicationSchema,
+  // user
+  createUserSchema,
 };

@@ -10,6 +10,7 @@ const TokenManager = {
   verifyRefreshToken: (refreshToken) => {
     try {
       const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_KEY);
+
       return payload;
     } catch (error) {
       console.log(error);
@@ -19,6 +20,7 @@ const TokenManager = {
   verify: (accessToken, secret) => {
     try {
       const payload = jwt.verify(accessToken, secret);
+
       return payload;
     } catch (error) {
       console.log(error);

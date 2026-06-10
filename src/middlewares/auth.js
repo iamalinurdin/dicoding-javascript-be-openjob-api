@@ -11,6 +11,7 @@ async function authenticateToken(req, res, next) {
         process.env.ACCESS_TOKEN_KEY,
       );
       req.user = user;
+
       return next();
     } catch (error) {
       return response(res, 401, error.message, null);

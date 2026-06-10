@@ -44,18 +44,14 @@ class UserRepository {
       text: "SELECT id, password FROM users WHERE email = $1",
       values: [email],
     };
-
     const user = await this.pool.query(query);
+
     if (!user) {
       return null;
     }
 
-    console.log(user.rows);
-
     const { id, password: hashedPassword } = user.rows[0];
     const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
-
-    console.log(isPasswordMatch);
 
     if (!isPasswordMatch) {
       return null;
