@@ -5,7 +5,9 @@ import { response } from "../utils/index.js";
 export const getJobs = async (req, res, next) => {
   const jobs = await jobRepository.getJobs();
 
-  response(res, 200, "success", jobs);
+  response(res, 200, "success", {
+    jobs,
+  });
 };
 
 export const getJobById = async (req, res, next) => {
@@ -21,16 +23,20 @@ export const getJobById = async (req, res, next) => {
 
 export const getJobByCompany = async (req, res, next) => {
   const { companyId } = req.params;
-  const job = await jobRepository.getJobByCompany(companyId);
+  const jobs = await jobRepository.getJobByCompany(companyId);
 
-  response(res, 200, "success", job);
+  response(res, 200, "success", {
+    jobs,
+  });
 };
 
 export const getJobByCategory = async (req, res, next) => {
   const { categoryId } = req.params;
-  const job = await jobRepository.getJobByCategory(categoryId);
+  const jobs = await jobRepository.getJobByCategory(categoryId);
 
-  response(res, 200, "success", job);
+  response(res, 200, "success", {
+    jobs,
+  });
 };
 
 export const createJob = async (req, res, next) => {
@@ -67,7 +73,7 @@ export const createJob = async (req, res, next) => {
     return next(new InvariantError("pekerjaan gagal disimpan"));
   }
 
-  response(res, 200, "success", job);
+  response(res, 201, "success", job);
 };
 
 export const updateJob = async (req, res, next) => {
@@ -117,5 +123,5 @@ export const deleteJob = async (req, res, next) => {
     return next(new NotFoundError("pekerjaan tidak ditemukan"));
   }
 
-  response(res, 201, "success", deletedJob);
+  response(res, 200, "success", deletedJob);
 };

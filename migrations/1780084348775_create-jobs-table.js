@@ -42,6 +42,10 @@ export const up = (pgm) => {
       type: "VARCHAR(255)",
       notNull: true,
     },
+    location_city: {
+      type: "VARCHAR(255)",
+      notNull: true,
+    },
     salary_min: {
       type: "INTEGER",
       notNull: true,

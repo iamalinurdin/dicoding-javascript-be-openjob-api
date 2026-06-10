@@ -18,7 +18,12 @@ jobRoute.get("/jobs/:id", getJobById);
 jobRoute.get("/jobs/company/:companyId", getJobByCompany);
 jobRoute.get("/jobs/category/:categoryId", getJobByCategory);
 jobRoute.post("/jobs", authenticateToken, validate(jobCreateSchema), createJob);
-jobRoute.put("/jobs", authenticateToken, validate(jobUpdateSchema), updateJob);
-jobRoute.post("/jobs", authenticateToken, deleteJob);
+jobRoute.put(
+  "/jobs/:id",
+  authenticateToken,
+  validate(jobUpdateSchema),
+  updateJob,
+);
+jobRoute.delete("/jobs/:id", authenticateToken, deleteJob);
 
 export default jobRoute;
