@@ -44,19 +44,15 @@ export const up = (pgm) => {
     },
     location_city: {
       type: "VARCHAR(255)",
-      notNull: true,
     },
     salary_min: {
       type: "INTEGER",
-      notNull: true,
     },
     salary_max: {
       type: "INTEGER",
-      notNull: true,
     },
     is_salary_visible: {
       type: "BOOLEAN",
-      default: true,
     },
     status: {
       type: "VARCHAR(255)",
