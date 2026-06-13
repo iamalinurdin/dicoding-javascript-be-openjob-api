@@ -1,6 +1,6 @@
 import express from "express";
 import { login, logout, refreshToken } from "../controllers/index.js";
-import { validate } from "../middlewares/index.js";
+import { authenticateToken, validate } from "../middlewares/index.js";
 import {
   loginSchema,
   logoutSchema,
@@ -11,6 +11,11 @@ const authRoute = express.Router();
 
 authRoute.post("/authentications", validate(loginSchema), login);
 authRoute.put("/authentications", validate(refreshTokenSchema), refreshToken);
-authRoute.delete("/authentications", validate(logoutSchema), logout);
+authRoute.delete(
+  "/authentications",
+  authenticateToken,
+  validate(logoutSchema),
+  logout,
+);
 
 export default authRoute;

@@ -14,7 +14,7 @@ export const jobCreateSchema = Joi.object({
   salary_min: Joi.number().integer(),
   salary_max: Joi.number().integer().min(Joi.ref("salary_min")),
   is_salary_visible: Joi.boolean(),
-  status: Joi.string().valid("open", "closed", "draft").required(),
+  status: Joi.string().required(),
 });
 
 export const jobUpdateSchema = Joi.object({
@@ -31,5 +31,5 @@ export const jobUpdateSchema = Joi.object({
   salary_min: Joi.number().integer(),
   salary_max: Joi.number().integer().min(Joi.ref("salary_min")),
   is_salary_visible: Joi.boolean(),
-  status: Joi.string().valid("open", "closed", "draft").required(),
+  status: Joi.string().required(),
 });
