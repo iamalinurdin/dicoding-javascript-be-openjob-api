@@ -1,5 +1,5 @@
 import { InvariantError, NotFoundError } from "../exceptions/index.js";
-import ApplicationService from "../producers/application.service.js";
+import ApplicationProducer from "../producers/application.producer.js";
 import { applicationRepository } from "../repositories/index.js";
 import { response } from "../utils/index.js";
 
@@ -25,7 +25,7 @@ export const applyJob = async (req, res, next) => {
     );
   }
 
-  await ApplicationService.sendMessage(
+  await ApplicationProducer.sendMessage(
     "application:apply",
     JSON.stringify({
       application_id: application.id,

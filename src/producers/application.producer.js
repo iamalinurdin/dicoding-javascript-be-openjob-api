@@ -1,6 +1,6 @@
 import amqp from "amqplib";
 
-const ApplicationService = {
+const ApplicationProducer = {
   sendMessage: async (queue, message) => {
     const connection = await amqp.connect({
       hostname: process.env.RABBITMQ_HOST,
@@ -21,4 +21,4 @@ const ApplicationService = {
   },
 };
 
-export default ApplicationService;
+export default ApplicationProducer;
