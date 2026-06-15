@@ -7,6 +7,7 @@ import {
   jobRoute,
   applicationRoute,
   bookmarkRoute,
+  uploadRouter,
 } from "./routes/index.js";
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.use("/", categoryRoute);
 router.use("/", jobRoute);
 router.use("/", applicationRoute);
 router.use("/", bookmarkRoute);
+router.use("/", uploadRouter);
 
 export default router;

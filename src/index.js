@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(routes);
 app.use(ErrorHandler);
+app.use("/uploads", express.static("src/assets"));
 
 app.listen(port, () => {
   console.log(`listening at ${hostname}:${port}`);

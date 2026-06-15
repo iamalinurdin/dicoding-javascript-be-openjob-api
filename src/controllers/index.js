@@ -33,6 +33,7 @@ import {
   updateApplication,
 } from "./application.controller.js";
 export * from "./bookmark.controller.js";
+export * from "./upload.controller.js";
 
 export {
   // users

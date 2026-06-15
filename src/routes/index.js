@@ -5,6 +5,7 @@ import categoryRoute from "./category.route.js";
 import jobRoute from "./job.route.js";
 import applicationRoute from "./application.route.js";
 import bookmarkRoute from "./bookmark.route.js";
+import uploadRouter from "./upload.route.js";
 
 export {
   userRoute,
@@ -14,4 +15,5 @@ export {
   jobRoute,
   applicationRoute,
   bookmarkRoute,
+  uploadRouter,
 };
