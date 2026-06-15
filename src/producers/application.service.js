@@ -2,7 +2,12 @@ import amqp from "amqplib";
 
 const ApplicationService = {
   sendMessage: async (queue, message) => {
-    const connection = await amqp.connect(process.env.RABBITMQ_SERVER);
+    const connection = await amqp.connect({
+      hostname: process.env.RABBITMQ_HOST,
+      port: process.env.RABBITMQ_PORT,
+      username: process.env.RABBITMQ_USER,
+      password: process.env.RABBITMQ_PASSWORD,
+    });
     const channel = await connection.createChannel();
     await channel.assertQueue(queue, {
       durable: true,
