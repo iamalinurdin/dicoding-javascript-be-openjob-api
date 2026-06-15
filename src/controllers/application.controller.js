@@ -1,4 +1,5 @@
 import { InvariantError, NotFoundError } from "../exceptions/index.js";
+import ApplicationService from "../producers/application.service.js";
 import { applicationRepository } from "../repositories/index.js";
 import { response } from "../utils/index.js";
 
@@ -23,6 +24,13 @@ export const applyJob = async (req, res, next) => {
       new InvariantError("gagal melamar pekerjaan. silakan coba lagi"),
     );
   }
+
+  await ApplicationService.sendMessage(
+    "application:apply",
+    JSON.stringify({
+      application_id: application.id,
+    }),
+  );
 
   response(res, 201, "success", application);
 };
