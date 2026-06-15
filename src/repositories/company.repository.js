@@ -1,9 +1,11 @@
 import { nanoid } from "nanoid";
 import { Pool } from "pg";
+import CacheService from "../services/cache.service.js";
 
 class CompanyRepository {
   constructor() {
     this.pool = new Pool();
+    this.cacheService = new CacheService();
   }
 
   async getCompanies() {
@@ -16,13 +18,24 @@ class CompanyRepository {
   }
 
   async getCompanyById(id) {
-    const query = {
-      text: "SELECT * FROM companies WHERE id = $1",
-      values: [id],
-    };
-    const result = await this.pool.query(query);
+    const cacheKey = `company:${id}`;
 
-    return result.rows[0];
+    try {
+      const company = await this.cacheService.get(cacheKey);
+
+      return company;
+    } catch (error) {
+      const query = {
+        text: "SELECT * FROM companies WHERE id = $1",
+        values: [id],
+      };
+      const result = await this.pool.query(query);
+      const row = result.rows[0];
+
+      await this.cacheService.set(cacheKey, row);
+
+      return row;
+    }
   }
 
   async createCompany({ name, location, description }) {
