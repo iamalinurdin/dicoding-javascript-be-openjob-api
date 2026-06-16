@@ -3,7 +3,7 @@ import { response } from "../utils/index.js";
 
 export const uploadFile = async (req, res, next) => {
   if (!req.file) {
-    return next(new ClientError("no file uploaded"));
+    return next(new ClientError("required file only"));
   }
 
   const hostname = process.env.HOST || "localhost";
