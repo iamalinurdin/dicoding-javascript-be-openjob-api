@@ -13,6 +13,15 @@ export const getApplications = async (req, res, next) => {
 
 export const applyJob = async (req, res, next) => {
   const { user_id, job_id, status } = req.validated;
+  const hasApplied = await applicationRepository.validateUserHasNotApply({
+    user_id,
+    job_id,
+  });
+
+  if (hasApplied) {
+    return next(new InvariantError("you have been applied the job before"));
+  }
+
   const application = await applicationRepository.applyJob({
     user_id,
     job_id,

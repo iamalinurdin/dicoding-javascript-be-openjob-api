@@ -19,7 +19,7 @@ class ApplicationRepository {
   async applyJob({ user_id, job_id, status = "pending" }) {
     const id = nanoid(10);
     const query = {
-      text: `INSERT INTO ${this.table} (id, user_id, job_id, status) VALUES ($1, $2, $3, $4) RETURNING id`,
+      text: `INSERT INTO ${this.table} (id, user_id, job_id, status) VALUES ($1, $2, $3, $4) RETURNING *`,
       values: [id, user_id, job_id, status],
     };
     const result = await this.pool.query(query);
@@ -79,6 +79,16 @@ class ApplicationRepository {
     const result = await this.pool.query(query);
 
     return result.rows[0].id;
+  }
+
+  async validateUserHasNotApply({ user_id, job_id }) {
+    const query = {
+      text: "SELECT * FROM applications WHERE user_id = $1 AND job_id = $2",
+      values: [user_id, job_id],
+    };
+    const result = await this.pool.query(query);
+
+    return result.rowCount;
   }
 }
 
