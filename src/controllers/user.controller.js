@@ -34,3 +34,14 @@ export const getUserById = async (req, res, next) => {
 
   response(res, 200, "success", user);
 };
+
+export const profile = async (req, res, next) => {
+  const { id } = req.user;
+  const user = await userRepository.getUserById(id);
+
+  if (!user) {
+    return next(new NotFoundError("user tidak ditemukan"));
+  }
+
+  response(res, 200, "success", user);
+};
