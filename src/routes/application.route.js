@@ -42,7 +42,7 @@ applicationRoute.put(
   "/applications/:id",
   authenticateToken,
   validate(updateApplicationSchema),
-  getApplicationByJobId,
+  updateApplication,
 );
 applicationRoute.delete(
   "/applications/:id",

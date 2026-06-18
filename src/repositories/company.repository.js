@@ -9,12 +9,27 @@ class CompanyRepository {
   }
 
   async getCompanies() {
+    const cacheKey = "companies:all";
+
+    if (this.cacheService.get(cacheKey)) {
+      return {
+        data: this.cacheService.get(cacheKey),
+        source: "cache",
+      };
+    }
+
     const query = {
       text: "SELECT * FROM companies",
     };
     const result = await this.pool.query(query);
+    const rows = result.rows;
 
-    return result.rows;
+    await this.cacheService.set(cacheKey, JSON.stringify(rows));
+
+    return {
+      data: rows,
+      source: "database",
+    };
   }
 
   async getCompanyById(id) {
@@ -62,13 +77,11 @@ class CompanyRepository {
 
     const updatedAt = new Date().toISOString();
     const query = {
-      text: "UPDATE companies SET name = $1, location = $2, description = $3, updated_at = $4 WHERE id = $5 RETURNING id",
+      text: "UPDATE companies SET name = $1, location = $2, description = $3, updated_at = $4 WHERE id = $5 RETURNING *",
       values: [name, location, description, updatedAt, id],
     };
     const result = await this.pool.query(query);
     const row = result.rows[0];
-
-    await this.cacheService.set(cacheKey, JSON.stringify(row));
 
     return {
       data: row,

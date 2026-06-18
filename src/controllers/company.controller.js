@@ -18,7 +18,9 @@ export const createCompany = async (req, res, next) => {
 };
 
 export const getCompanies = async (req, res, next) => {
-  const companies = await companyRepository.getCompanies();
+  const { data: companies, source } = await companyRepository.getCompanies();
+
+  res.setHeader("X-Data-Source", source);
 
   response(res, 200, "success", {
     companies,

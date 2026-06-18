@@ -18,12 +18,15 @@ class ApplicationRepository {
   }
 
   async applyJob({ user_id, job_id, status = "pending" }) {
+    const cacheKey = `applications_by_user:${user_id}`;
     const id = nanoid(10);
     const query = {
       text: `INSERT INTO applications (id, user_id, job_id, status) VALUES ($1, $2, $3, $4) RETURNING *`,
       values: [id, user_id, job_id, status],
     };
     const result = await this.pool.query(query);
+
+    await this.cacheService.remove(cacheKey);
 
     return result.rows[0];
   }
@@ -113,12 +116,15 @@ class ApplicationRepository {
   }
 
   async updateApplication({ id, status }) {
+    const cacheKey = `application_by_id:${id}`;
     const updatedAt = new Date().toISOString();
     const query = {
-      text: `UPDATE applications SET status = $1, updated_at = $2 WHERE id = $3 RETURNING id`,
+      text: `UPDATE applications SET status = $1, updated_at = $2 WHERE id = $3 RETURNING *`,
       values: [status, updatedAt, id],
     };
     const result = await this.pool.query(query);
+
+    await this.cacheService.remove(cacheKey);
 
     return result.rows[0];
   }

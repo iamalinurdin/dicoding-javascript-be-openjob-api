@@ -5,7 +5,6 @@ import CacheService from "../services/cache.service.js";
 class BookmarkRepository {
   constructor() {
     this.pool = new Pool();
-    this.table = "bookmarks";
     this.cacheService = new CacheService();
   }
 
@@ -14,6 +13,8 @@ class BookmarkRepository {
 
     try {
       const bookmarks = await this.cacheService.get(cacheKey);
+
+      console.log(cacheKey);
 
       return {
         data: JSON.parse(bookmarks),

@@ -3,7 +3,8 @@ import { bookmarkRepository } from "../repositories/index.js";
 import { response } from "../utils/index.js";
 
 export const getBookmarks = async (req, res, next) => {
-  const { data: bookmarks, source } = await bookmarkRepository.getBookmarks();
+  const { id } = req.user;
+  const { data: bookmarks, source } = await bookmarkRepository.getBookmarks(id);
 
   res.setHeader("X-Data-Source", source);
 
