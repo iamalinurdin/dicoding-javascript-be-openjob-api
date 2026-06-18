@@ -1,10 +1,12 @@
 import { Pool } from "pg";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
+import CacheService from "../services/cache.service.js";
 
 class UserRepository {
   constructor() {
     this.pool = new Pool();
+    this.cacheService = new CacheService();
   }
 
   async createUser({ name, email, password, role }) {
@@ -20,13 +22,29 @@ class UserRepository {
   }
 
   async getUserById(id) {
-    const query = {
-      text: "SELECT * FROM users WHERE id = $1",
-      values: [id],
-    };
-    const result = await this.pool.query(query);
+    const cacheKey = `user:${id}`;
+    try {
+      const user = await this.cacheService.get(cacheKey);
 
-    return result.rows[0];
+      return {
+        data: JSON.parse(user),
+        source: "cache",
+      };
+    } catch (error) {
+      const query = {
+        text: "SELECT * FROM users WHERE id = $1",
+        values: [id],
+      };
+      const result = await this.pool.query(query);
+      const row = result.rows[0];
+
+      await this.cacheService.set(cacheKey, JSON.stringify(row));
+
+      return {
+        data: row,
+        source: "database",
+      };
+    }
   }
 
   async verifyEmail(email) {

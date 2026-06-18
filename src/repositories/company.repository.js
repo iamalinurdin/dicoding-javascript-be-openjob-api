@@ -23,7 +23,10 @@ class CompanyRepository {
     try {
       const company = await this.cacheService.get(cacheKey);
 
-      return company;
+      return {
+        data: JSON.parse(company),
+        source: "cache",
+      };
     } catch (error) {
       const query = {
         text: "SELECT * FROM companies WHERE id = $1",
@@ -32,9 +35,12 @@ class CompanyRepository {
       const result = await this.pool.query(query);
       const row = result.rows[0];
 
-      await this.cacheService.set(cacheKey, row);
+      await this.cacheService.set(cacheKey, JSON.stringify(row));
 
-      return row;
+      return {
+        data: row,
+        source: "database",
+      };
     }
   }
 
@@ -50,14 +56,24 @@ class CompanyRepository {
   }
 
   async updateCompany({ id, name, location, description }) {
+    const cacheKey = `company:${id}`;
+
+    await this.cacheService.remove(cacheKey);
+
     const updatedAt = new Date().toISOString();
     const query = {
       text: "UPDATE companies SET name = $1, location = $2, description = $3, updated_at = $4 WHERE id = $5 RETURNING id",
       values: [name, location, description, updatedAt, id],
     };
     const result = await this.pool.query(query);
+    const row = result.rows[0];
 
-    return result.rows[0];
+    await this.cacheService.set(cacheKey, JSON.stringify(row));
+
+    return {
+      data: row,
+      source: "database",
+    };
   }
 
   async deleteCompany(id) {

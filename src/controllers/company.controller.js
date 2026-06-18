@@ -27,11 +27,13 @@ export const getCompanies = async (req, res, next) => {
 
 export const getCompanyById = async (req, res, next) => {
   const { id } = req.params;
-  const company = await companyRepository.getCompanyById(id);
+  const { data: company, source } = await companyRepository.getCompanyById(id);
 
   if (!company) {
     return next(new NotFoundError("perusahaan tidak ditemukan"));
   }
+
+  res.setHeader("X-Data-Source", source);
 
   response(res, 200, "success", company);
 };
@@ -39,16 +41,19 @@ export const getCompanyById = async (req, res, next) => {
 export const updateCompany = async (req, res, next) => {
   const { name, location, description = "-" } = req.validated;
   const { id } = req.params;
-  const updatedCompany = await companyRepository.updateCompany({
-    id,
-    name,
-    location,
-    description,
-  });
+  const { data: updatedCompany, source } =
+    await companyRepository.updateCompany({
+      id,
+      name,
+      location,
+      description,
+    });
 
   if (!updatedCompany) {
     return next(new NotFoundError("perusahaan tidak ditemukan"));
   }
+
+  res.setHeader("X-Data-Source", source);
 
   response(res, 200, "success", updatedCompany);
 };

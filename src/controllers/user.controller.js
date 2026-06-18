@@ -26,11 +26,13 @@ export const createUser = async (req, res, next) => {
 
 export const getUserById = async (req, res, next) => {
   const { id } = req.params;
-  const user = await userRepository.getUserById(id);
+  const { data: user, source } = await userRepository.getUserById(id);
 
   if (!user) {
     return next(new NotFoundError("user tidak ditemukan"));
   }
+
+  res.setHeader("X-Data-Source", source);
 
   response(res, 200, "success", user);
 };

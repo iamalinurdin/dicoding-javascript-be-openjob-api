@@ -1,20 +1,39 @@
 import { nanoid } from "nanoid";
 import { Pool } from "pg";
+import CacheService from "../services/cache.service.js";
 
 class BookmarkRepository {
   constructor() {
     this.pool = new Pool();
     this.table = "bookmarks";
+    this.cacheService = new CacheService();
   }
 
   async getBookmarks(user_id) {
-    const query = {
-      text: `SELECT * FROM bookmarks WHERE user_id = $1`,
-      values: [user_id],
-    };
-    const result = await this.pool.query(query);
+    const cacheKey = `bookmarks:${user_id}`;
 
-    return result.rows;
+    try {
+      const bookmarks = await this.cacheService.get(cacheKey);
+
+      return {
+        data: JSON.parse(bookmarks),
+        source: "cache",
+      };
+    } catch (error) {
+      const query = {
+        text: `SELECT * FROM bookmarks WHERE user_id = $1`,
+        values: [user_id],
+      };
+      const result = await this.pool.query(query);
+      const rows = result.rows;
+
+      await this.cacheService.set(cacheKey, JSON.stringify(rows));
+
+      return {
+        data: rows,
+        source: "database",
+      };
+    }
   }
 
   async addBookmark({ user_id, job_id }) {

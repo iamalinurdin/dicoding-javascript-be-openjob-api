@@ -46,7 +46,8 @@ export const applyJob = async (req, res, next) => {
 
 export const getApplicationById = async (req, res, next) => {
   const { id } = req.params;
-  const application = await applicationRepository.getApplicationById(id);
+  const { data: application, source } =
+    await applicationRepository.getApplicationById(id);
 
   if (!application) {
     return next(
@@ -54,18 +55,17 @@ export const getApplicationById = async (req, res, next) => {
     );
   }
 
+  res.setHeader("X-Data-Source", source);
+
   response(res, 200, "success", application);
 };
 
 export const getApplicationByUserId = async (req, res, next) => {
   const { id } = req.params;
-  const applications = await applicationRepository.getApplicationByUserId(id);
+  const { data: applications, source } =
+    await applicationRepository.getApplicationByUserId(id);
 
-  // if (!application) {
-  //   return next(
-  //     new NotFoundError("gagal melamar pekerjaan. silakan coba lagi"),
-  //   );
-  // }
+  res.setHeader("X-Data-Source", source);
 
   response(res, 200, "success", {
     applications,
@@ -74,13 +74,10 @@ export const getApplicationByUserId = async (req, res, next) => {
 
 export const getApplicationByJobId = async (req, res, next) => {
   const { id } = req.params;
-  const applications = await applicationRepository.getApplicationByJobId(id);
+  const { data: applications, source } =
+    await applicationRepository.getApplicationByJobId(id);
 
-  // if (!application) {
-  //   return next(
-  //     new NotFoundError("gagal melamar pekerjaan. silakan coba lagi"),
-  //   );
-  // }
+  res.setHeader("X-Data-Source", source);
 
   response(res, 200, "success", {
     applications,

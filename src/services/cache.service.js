@@ -1,5 +1,5 @@
-import { createClient } from "redis";
 import process from "process";
+import { createClient } from "redis";
 
 class CacheService {
   constructor() {
@@ -18,7 +18,7 @@ class CacheService {
 
   async set(key, value, expiration = 3600) {
     await this.redis.set(key, value, {
-      expiration: expiration,
+      EX: expiration,
     });
   }
 
