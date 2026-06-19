@@ -23,6 +23,7 @@ class UserRepository {
 
   async getUserById(id) {
     const cacheKey = `user:${id}`;
+
     try {
       const user = await this.cacheService.get(cacheKey);
 
@@ -36,12 +37,19 @@ class UserRepository {
         values: [id],
       };
       const result = await this.pool.query(query);
-      const row = result.rows[0];
+      const rows = result.rows;
 
-      await this.cacheService.set(cacheKey, JSON.stringify(row));
+      if (rows.length > 0) {
+        await this.cacheService.set(cacheKey, JSON.stringify(rows[0]));
+
+        return {
+          data: rows[0],
+          source: "database",
+        };
+      }
 
       return {
-        data: row,
+        data: null,
         source: "database",
       };
     }
