@@ -18,7 +18,7 @@ class ApplicationRepository {
   }
 
   async applyJob({ user_id, job_id, status = "pending" }) {
-    const cacheKey = `applications_by_user:${user_id}`;
+    // const cacheKey = `applications_by_user:${user_id}`;
     const id = nanoid(10);
     const query = {
       text: `INSERT INTO applications (id, user_id, job_id, status) VALUES ($1, $2, $3, $4) RETURNING *`,
@@ -26,7 +26,7 @@ class ApplicationRepository {
     };
     const result = await this.pool.query(query);
 
-    await this.cacheService.remove(cacheKey);
+    // await this.cacheService.remove(cacheKey);
 
     return result.rows[0];
   }
@@ -57,6 +57,18 @@ class ApplicationRepository {
         source: "database",
       };
     }
+  }
+
+  async getApplicationByIdFromDb(id) {
+    const query = {
+      text: `SELECT * FROM jobs WHERE id = $1`,
+      values: [id],
+    };
+
+    const result = await this.pool.query(query);
+    const row = result.rows[0];
+
+    return row;
   }
 
   async getApplicationByUserId(user_id) {
@@ -131,12 +143,12 @@ class ApplicationRepository {
 
   async deleteApplication(id) {
     const query = {
-      text: `DELETE FROM applications WHERE id = $1 RETURNING id`,
+      text: `DELETE FROM applications WHERE id = $1 RETURNING *`,
       values: [id],
     };
     const result = await this.pool.query(query);
 
-    return result.rows[0].id;
+    return result.rows[0];
   }
 
   async validateUserHasNotApply({ user_id, job_id }) {

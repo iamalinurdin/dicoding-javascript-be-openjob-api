@@ -13,6 +13,16 @@ export const getApplications = async (req, res, next) => {
 
 export const applyJob = async (req, res, next) => {
   const { user_id, job_id, status } = req.validated;
+  const getJob = await applicationRepository.getApplicationByIdFromDb(job_id);
+
+  if (!getJob) {
+    return next(
+      new InvariantError(
+        "gagal melamar pekerjaan karena pekerjaan tidak tersedia",
+      ),
+    );
+  }
+
   const hasApplied = await applicationRepository.validateUserHasNotApply({
     user_id,
     job_id,
