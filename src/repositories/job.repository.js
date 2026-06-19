@@ -8,7 +8,7 @@ class JobRepository {
 
   async getJobs() {
     const query = {
-      text: "SELECT * FROM jobs",
+      text: "SELECT id, company_id, category_id, title, description, job_type, experience_level, location_type, location_city, salary_min, salary_max, is_salary_visible, status FROM jobs",
     };
     const result = await this.pool.query(query);
 
