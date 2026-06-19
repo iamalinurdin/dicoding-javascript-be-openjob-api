@@ -9,20 +9,19 @@ class BookmarkRepository {
   }
 
   async getBookmarks(user_id) {
-    const cacheKey = `bookmarks:${user_id}`;
+    // const cacheKey = `bookmarks:${user_id}`;
 
-    try {
-      const bookmarks = await this.cacheService.get(cacheKey);
+    // try {
+    //   const bookmarks = await this.cacheService.get(cacheKey);
 
-      return {
-        data: JSON.parse(bookmarks),
-        source: "cache",
-      };
-    } catch (error) {
-      const query = {
-        text: `
+    //   return {
+    //     data: JSON.parse(bookmarks),
+    //     source: "cache",
+    //   };
+    // } catch (error) {
+    const query = {
+      text: `
           SELECT 
-            id,
             b.id as id,
             b.user_id as user_id,
             u.name as user_name,
@@ -43,20 +42,20 @@ class BookmarkRepository {
           ON u.id = b.user_id
           JOIN jobs j
           ON j.id = b.job_id
-          WHERE user_id = $1
+          WHERE b.user_id = $1
         `,
-        values: [user_id],
-      };
-      const result = await this.pool.query(query);
-      const rows = result.rows;
+      values: [user_id],
+    };
+    const result = await this.pool.query(query);
+    const rows = result.rows;
 
-      await this.cacheService.set(cacheKey, JSON.stringify(rows));
+    // await this.cacheService.set(cacheKey, JSON.stringify(rows));
 
-      return {
-        data: rows,
-        source: "database",
-      };
-    }
+    return {
+      data: rows,
+      source: "database",
+    };
+    // }
   }
 
   async addBookmark({ user_id, job_id }) {
