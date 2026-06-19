@@ -9,15 +9,15 @@ class CompanyRepository {
   }
 
   async getCompanies() {
-    const cacheKey = "companies:all";
-    const companies = JSON.parse(await this.cacheService.get(cacheKey));
+    // const cacheKey = "companies:all";
+    // const companies = await this.cacheService.get(cacheKey);
 
-    if (Array(companies).length > 0) {
-      return {
-        data: companies,
-        source: "cache",
-      };
-    }
+    // if (Array(companies).length > 0) {
+    //   return {
+    //     data: companies,
+    //     source: "cache",
+    //   };
+    // }
 
     const query = {
       text: "SELECT * FROM companies",
@@ -25,7 +25,7 @@ class CompanyRepository {
     const result = await this.pool.query(query);
     const rows = result.rows;
 
-    await this.cacheService.set(cacheKey, JSON.stringify(rows));
+    // await this.cacheService.set(cacheKey, JSON.stringify(rows));
 
     return {
       data: rows,
