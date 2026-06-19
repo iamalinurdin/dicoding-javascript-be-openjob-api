@@ -14,15 +14,37 @@ class BookmarkRepository {
     try {
       const bookmarks = await this.cacheService.get(cacheKey);
 
-      console.log(cacheKey);
-
       return {
         data: JSON.parse(bookmarks),
         source: "cache",
       };
     } catch (error) {
       const query = {
-        text: `SELECT * FROM bookmarks WHERE user_id = $1`,
+        text: `
+          SELECT 
+            id,
+            b.id as id,
+            b.user_id as user_id,
+            u.name as user_name,
+            u.email as user_email,
+            j.company_id as company_id,
+            j.category_id as category_id,
+            j.title as title,
+            j.description as description,
+            j.job_type as job_type,
+            j.experience_level as experience_level,
+            j.location_type as location_type,
+            j.location_city as location_city,
+            j.salary_min as salary_min,
+            j.salary_max as salary_max,
+            j.status as status
+          FROM bookmarks b
+          JOIN users u
+          ON u.id = b.user_id
+          JOIN jobs j
+          ON j.id = b.job_id
+          WHERE user_id = $1
+        `,
         values: [user_id],
       };
       const result = await this.pool.query(query);
