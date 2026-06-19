@@ -10,7 +10,27 @@ class ApplicationRepository {
 
   async getApplications() {
     const query = {
-      text: `SELECT * FROM applications`,
+      text: `
+        SELECT 
+          a.id as id,
+          u.id as user_id,
+          u.name as applicant_name,
+          u.email as applicant_email,
+          j.company_id as company_id,
+          j.category_id as category_id,
+          j.title as title,
+          j.description as description,
+          j.job_type as job_type,
+          j.experience_level as experience_level,
+          j.location_type as location_type,
+          j.location_city as location_city,
+          a.created_at as created_at
+        FROM applications a
+        JOIN users u
+        ON u.id = a.user_id
+        JOIN jobs j
+        ON j.id = a.job_id
+      `,
     };
     const result = await this.pool.query(query);
 
@@ -48,12 +68,19 @@ class ApplicationRepository {
       };
 
       const result = await this.pool.query(query);
-      const row = result.rows[0];
+      const rows = result.rows;
 
-      await this.cacheService.set(cacheKey, JSON.stringify(row));
+      if (rows.length > 0) {
+        await this.cacheService.set(cacheKey, JSON.stringify(rows[0]));
+
+        return {
+          data: rows[0],
+          source: "database",
+        };
+      }
 
       return {
-        data: row,
+        data: null,
         source: "database",
       };
     }
@@ -142,11 +169,14 @@ class ApplicationRepository {
   }
 
   async deleteApplication(id) {
+    const cacheKey = `application_by_id:${id}`;
     const query = {
       text: `DELETE FROM applications WHERE id = $1 RETURNING *`,
       values: [id],
     };
     const result = await this.pool.query(query);
+
+    await this.cacheService.remove(cacheKey);
 
     return result.rows[0];
   }
