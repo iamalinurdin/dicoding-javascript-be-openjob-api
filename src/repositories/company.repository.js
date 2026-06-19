@@ -10,10 +10,11 @@ class CompanyRepository {
 
   async getCompanies() {
     const cacheKey = "companies:all";
+    const companies = JSON.parse(await this.cacheService.get(cacheKey));
 
-    if (this.cacheService.get(cacheKey)) {
+    if (Array(companies).length > 0) {
       return {
-        data: this.cacheService.get(cacheKey),
+        data: companies,
         source: "cache",
       };
     }
@@ -50,10 +51,17 @@ class CompanyRepository {
       const result = await this.pool.query(query);
       const row = result.rows[0];
 
-      await this.cacheService.set(cacheKey, JSON.stringify(row));
+      if (row) {
+        await this.cacheService.set(cacheKey, JSON.stringify(row));
+
+        return {
+          data: row,
+          source: "database",
+        };
+      }
 
       return {
-        data: row,
+        data: null,
         source: "database",
       };
     }
@@ -72,9 +80,6 @@ class CompanyRepository {
 
   async updateCompany({ id, name, location, description }) {
     const cacheKey = `company:${id}`;
-
-    await this.cacheService.remove(cacheKey);
-
     const updatedAt = new Date().toISOString();
     const query = {
       text: "UPDATE companies SET name = $1, location = $2, description = $3, updated_at = $4 WHERE id = $5 RETURNING *",
@@ -83,6 +88,8 @@ class CompanyRepository {
     const result = await this.pool.query(query);
     const row = result.rows[0];
 
+    await this.cacheService.remove(cacheKey);
+
     return {
       data: row,
       source: "database",
@@ -90,11 +97,14 @@ class CompanyRepository {
   }
 
   async deleteCompany(id) {
+    const cacheKey = `company:${id}`;
     const query = {
-      text: "DELETE FROM companies WHERE id = $1 RETURNING id",
+      text: "DELETE FROM companies WHERE id = $1 RETURNING *",
       values: [id],
     };
     const result = await this.pool.query(query);
+
+    await this.cacheService.remove(cacheKey);
 
     return result.rows[0];
   }
