@@ -38,7 +38,7 @@ class ApplicationRepository {
   }
 
   async applyJob({ user_id, job_id, status = "pending" }) {
-    // const cacheKey = `applications_by_user:${user_id}`;
+    const cacheKey = `applications_by_user:${user_id}`;
     const id = nanoid(10);
     const query = {
       text: `INSERT INTO applications (id, user_id, job_id, status) VALUES ($1, $2, $3, $4) RETURNING *`,
@@ -46,7 +46,7 @@ class ApplicationRepository {
     };
     const result = await this.pool.query(query);
 
-    // await this.cacheService.remove(cacheKey);
+    await this.cacheService.remove(cacheKey);
 
     return result.rows[0];
   }
@@ -66,21 +66,13 @@ class ApplicationRepository {
         text: `SELECT * FROM applications WHERE id = $1`,
         values: [id],
       };
-
       const result = await this.pool.query(query);
       const rows = result.rows;
 
-      if (rows.length > 0) {
-        await this.cacheService.set(cacheKey, JSON.stringify(rows[0]));
-
-        return {
-          data: rows[0],
-          source: "database",
-        };
-      }
+      await this.cacheService.set(cacheKey, JSON.stringify(rows[0]));
 
       return {
-        data: null,
+        data: rows[0],
         source: "database",
       };
     }
@@ -102,10 +94,10 @@ class ApplicationRepository {
     const cacheKey = `applications_by_user:${user_id}`;
 
     try {
-      const application = await this.cacheService.get(cacheKey);
+      const applications = await this.cacheService.get(cacheKey);
 
       return {
-        data: JSON.parse(application),
+        data: JSON.parse(applications),
         source: "cache",
       };
     } catch (error) {
@@ -113,21 +105,20 @@ class ApplicationRepository {
         text: `SELECT * FROM applications WHERE user_id = $1`,
         values: [user_id],
       };
-
       const result = await this.pool.query(query);
       const rows = result.rows;
 
-      if (rows.length > 0) {
-        await this.cacheService.set(cacheKey, JSON.stringify(rows));
-
-        return {
-          data: rows,
-          source: "database",
-        };
-      }
+      await this.cacheService.set(
+        cacheKey,
+        JSON.stringify({
+          applications: rows,
+        }),
+      );
 
       return {
-        data: [],
+        data: {
+          applications: rows,
+        },
         source: "database",
       };
     }

@@ -72,14 +72,12 @@ export const getApplicationById = async (req, res, next) => {
 
 export const getApplicationByUserId = async (req, res, next) => {
   const { id } = req.params;
-  const { data: applications, source } =
+  const { data, source } =
     await applicationRepository.getApplicationByUserId(id);
 
   res.setHeader("X-Data-Source", source);
 
-  response(res, 200, "success", {
-    applications,
-  });
+  response(res, 200, "success", data);
 };
 
 export const getApplicationByJobId = async (req, res, next) => {
