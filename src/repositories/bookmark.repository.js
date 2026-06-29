@@ -15,65 +15,57 @@ class BookmarkRepository {
       const bookmarks = await this.cacheService.get(cacheKey);
 
       return {
-        // data: [],
         data: JSON.parse(bookmarks),
         source: "cache",
       };
     } catch (error) {
       const query = {
         text: `
-SELECT
-  b.id AS id,
-  b.user_id AS user_id,
-  b.job_id AS job_id,
+          SELECT
+            b.id AS id,
+            b.user_id AS user_id,
+            b.job_id AS job_id,
 
-  u.name AS user_name,
-  u.email AS user_email,
+            u.name AS user_name,
+            u.email AS user_email,
 
-  j.company_id AS company_id,
-  j.category_id AS category_id,
-  j.title AS title,
-  j.description AS description,
-  j.job_type AS job_type,
-  j.experience_level AS experience_level,
-  j.location_type AS location_type,
-  j.location_city AS location_city,
-  j.salary_min AS salary_min,
-  j.salary_max AS salary_max,
-  j.is_salary_visible AS is_salary_visible,
+            j.company_id AS company_id,
+            j.category_id AS category_id,
+            j.title AS title,
+            j.description AS description,
+            j.job_type AS job_type,
+            j.experience_level AS experience_level,
+            j.location_type AS location_type,
+            j.location_city AS location_city,
+            j.salary_min AS salary_min,
+            j.salary_max AS salary_max,
+            j.is_salary_visible AS is_salary_visible,
 
-  c.name AS company_name,
-  c.location AS company_location
+            c.name AS company_name,
+            c.location AS company_location
 
-FROM bookmarks b
+          FROM bookmarks b
 
-JOIN users u
-  ON u.id = b.user_id
+          JOIN users u
+            ON u.id = b.user_id
 
-JOIN jobs j
-  ON j.id = b.job_id
+          JOIN jobs j
+            ON j.id = b.job_id
 
-JOIN companies c
-  ON c.id = j.company_id
+          JOIN companies c
+            ON c.id = j.company_id
 
-WHERE b.user_id = $1;
+          WHERE b.user_id = $1;
         `,
         values: [user_id],
       };
       const result = await this.pool.query(query);
       const rows = result.rows;
 
-      if (rows.length > 0) {
-        await this.cacheService.set(cacheKey, JSON.stringify(rows));
-
-        return {
-          data: rows,
-          source: "database",
-        };
-      }
+      await this.cacheService.set(cacheKey, JSON.stringify(rows));
 
       return {
-        data: [],
+        data: rows,
         source: "database",
       };
     }
