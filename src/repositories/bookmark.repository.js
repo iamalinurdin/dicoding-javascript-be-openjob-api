@@ -9,53 +9,74 @@ class BookmarkRepository {
   }
 
   async getBookmarks(user_id) {
-    // const cacheKey = `bookmarks:${user_id}`;
+    const cacheKey = `bookmarks:${user_id}`;
 
-    // try {
-    //   const bookmarks = await this.cacheService.get(cacheKey);
+    try {
+      const bookmarks = await this.cacheService.get(cacheKey);
 
-    //   return {
-    //     data: JSON.parse(bookmarks),
-    //     source: "cache",
-    //   };
-    // } catch (error) {
-    const query = {
-      text: `
-          SELECT 
-            b.id as id,
-            b.user_id as user_id,
-            u.name as user_name,
-            u.email as user_email,
-            j.company_id as company_id,
-            j.category_id as category_id,
-            j.title as title,
-            j.description as description,
-            j.job_type as job_type,
-            j.experience_level as experience_level,
-            j.location_type as location_type,
-            j.location_city as location_city,
-            j.salary_min as salary_min,
-            j.salary_max as salary_max,
-            j.status as status
-          FROM bookmarks b
-          JOIN users u
-          ON u.id = b.user_id
-          JOIN jobs j
-          ON j.id = b.job_id
-          WHERE b.user_id = $1
+      return {
+        // data: [],
+        data: JSON.parse(bookmarks),
+        source: "cache",
+      };
+    } catch (error) {
+      const query = {
+        text: `
+SELECT
+  b.id AS id,
+  b.user_id AS user_id,
+  b.job_id AS job_id,
+
+  u.name AS user_name,
+  u.email AS user_email,
+
+  j.company_id AS company_id,
+  j.category_id AS category_id,
+  j.title AS title,
+  j.description AS description,
+  j.job_type AS job_type,
+  j.experience_level AS experience_level,
+  j.location_type AS location_type,
+  j.location_city AS location_city,
+  j.salary_min AS salary_min,
+  j.salary_max AS salary_max,
+  j.is_salary_visible AS is_salary_visible,
+
+  c.name AS company_name,
+  c.location AS company_location
+
+FROM bookmarks b
+
+JOIN users u
+  ON u.id = b.user_id
+
+JOIN jobs j
+  ON j.id = b.job_id
+
+JOIN companies c
+  ON c.id = j.company_id
+
+WHERE b.user_id = $1;
         `,
-      values: [user_id],
-    };
-    const result = await this.pool.query(query);
-    const rows = result.rows;
+        values: [user_id],
+      };
+      const result = await this.pool.query(query);
+      const rows = result.rows;
 
-    // await this.cacheService.set(cacheKey, JSON.stringify(rows));
+      if (rows.length > 0) {
+        await this.cacheService.set(cacheKey, JSON.stringify(rows));
 
-    return {
-      data: rows,
-      source: "database",
-    };
-    // }
+        return {
+          data: rows,
+          source: "database",
+        };
+      }
+
+      return {
+        data: [],
+        source: "database",
+      };
+    }
   }
 
   async addBookmark({ user_id, job_id }) {

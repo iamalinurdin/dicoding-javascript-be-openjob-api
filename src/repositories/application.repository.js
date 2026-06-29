@@ -117,10 +117,17 @@ class ApplicationRepository {
       const result = await this.pool.query(query);
       const rows = result.rows;
 
-      await this.cacheService.set(cacheKey, JSON.stringify(rows));
+      if (rows.length > 0) {
+        await this.cacheService.set(cacheKey, JSON.stringify(rows));
+
+        return {
+          data: rows,
+          source: "database",
+        };
+      }
 
       return {
-        data: rows,
+        data: [],
         source: "database",
       };
     }

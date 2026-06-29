@@ -27,6 +27,7 @@ class CacheService {
 
     if (!result) {
       throw new Error("cache tidak ditemukan");
+      // return null;
     }
 
     return result;

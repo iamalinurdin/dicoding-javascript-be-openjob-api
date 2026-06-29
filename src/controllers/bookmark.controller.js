@@ -4,6 +4,9 @@ import { response } from "../utils/index.js";
 
 export const getBookmarks = async (req, res, next) => {
   const { id } = req.user;
+
+  console.log(id);
+
   const { data: bookmarks, source } = await bookmarkRepository.getBookmarks(id);
 
   res.setHeader("X-Data-Source", source);
